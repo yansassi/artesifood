@@ -106,7 +106,7 @@ function App() {
                   <span>Importar</span>
                   <input
                     type="file"
-                    accept=".json"
+                    accept=".xlsx,.xls"
                     onChange={handleImport}
                     className="hidden"
                   />
