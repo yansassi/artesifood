@@ -23,6 +23,9 @@ function App() {
     total: clients.length,
     contacted: clients.filter(c => ['contacted', 'responded', 'proposal_sent', 'closed'].includes(c.status)).length,
     closed: clients.filter(c => c.status === 'closed').length,
+    totalRevenue: clients
+      .filter(c => c.status === 'closed')
+      .reduce((sum, client) => sum + (client.value || 0), 0),
   };
 
   const handleAddClient = (clientData: Omit<Client, 'id' | 'createdAt' | 'updatedAt'>) => {
