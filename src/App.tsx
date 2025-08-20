@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, Users, Search, Camera, TrendingUp, Download, Upload } from 'lucide-react';
+import { Plus, Users, Search, CheckCircle, TrendingUp, Download, Upload, ExternalLink } from 'lucide-react';
 import { Client } from './types/client';
-import { ClientCard } from './components/ClientCard';
 import { ClientFormModal } from './components/ClientFormModal';
 import { ClientDetails } from './components/ClientDetails';
 import { useClients } from './hooks/useClients';
@@ -166,7 +165,7 @@ function App() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center space-x-3">
               <div className="bg-green-100 p-3 rounded-full">
-                <Camera className="w-6 h-6 text-green-600" />
+                <CheckCircle className="w-6 h-6 text-green-600" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900">{stats.closed}</p>
@@ -190,7 +189,7 @@ function App() {
           </div>
         </div>
 
-        {/* Client Grid */}
+        {/* Client Table */}
         {filteredClients.length === 0 ? (
           <div className="text-center py-16">
             <div className="bg-gray-100 rounded-full p-6 w-24 h-24 mx-auto mb-4 flex items-center justify-center">
@@ -214,14 +213,135 @@ function App() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredClients.map((client) => (
-              <ClientCard
-                key={client.id}
-                client={client}
-                onClick={() => setSelectedClient(client)}
-              />
-            ))}
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Nome
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      iFood
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Google
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Instagram
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      WhatsApp
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Observações
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Criado Em
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredClients.map((client) => {
+                    const statusConfig = getStatusConfig(client.status);
+                    return (
+                      <tr
+                        key={client.id}
+                        onClick={() => setSelectedClient(client)}
+                        className="hover:bg-gray-50 cursor-pointer transition-colors"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{client.name}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {client.ifoodLink ? (
+                            <a
+                              href={client.ifoodLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex items-center space-x-1 text-red-600 hover:text-red-700 transition-colors"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              <span className="text-xs">Link</span>
+                            </a>
+                          ) : (
+                            <span className="text-gray-400 text-xs">-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {client.googleLink ? (
+                            <a
+                              href={client.googleLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex items-center space-x-1 text-green-600 hover:text-green-700 transition-colors"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              <span className="text-xs">Link</span>
+                            </a>
+                          ) : (
+                            <span className="text-gray-400 text-xs">-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {client.instagram ? (
+                            <a
+                              href={client.instagram}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex items-center space-x-1 text-purple-600 hover:text-purple-700 transition-colors"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              <span className="text-xs">Link</span>
+                            </a>
+                          ) : (
+                            <span className="text-gray-400 text-xs">-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {client.whatsapp ? (
+                            <a
+                              href={`https://wa.me/${client.whatsapp.replace(/\D/g, '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex items-center space-x-1 text-teal-600 hover:text-teal-700 transition-colors"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                              <span className="text-xs">Link</span>
+                            </a>
+                          ) : (
+                            <span className="text-gray-400 text-xs">-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${statusConfig.bgColor}`}
+                            style={{ color: statusConfig.color }}
+                          >
+                            {statusConfig.label}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 max-w-xs truncate">
+                            {client.notes || '-'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(client.createdAt).toLocaleDateString('pt-BR')}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
