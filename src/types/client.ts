@@ -7,6 +7,7 @@ export interface Client {
   whatsapp: string;
   status: 'not_contacted' | 'contacted' | 'responded' | 'proposal_sent' | 'closed' | 'rejected';
   notes: string;
+  paymentMethod?: string;
   createdAt: Date;
   updatedAt: Date;
 }

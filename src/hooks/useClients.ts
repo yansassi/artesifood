@@ -60,6 +60,7 @@ export const useClients = () => {
       'Instagram': client.instagram,
       'WhatsApp': client.whatsapp,
       'Status': getStatusLabel(client.status),
+      'Forma de Pagamento': client.paymentMethod || '',
       'Observações': client.notes,
       'Criado em': new Date(client.createdAt).toLocaleDateString('pt-BR'),
       'Atualizado em': new Date(client.updatedAt).toLocaleDateString('pt-BR'),
@@ -77,6 +78,7 @@ export const useClients = () => {
       { wch: 30 }, // Instagram
       { wch: 15 }, // WhatsApp
       { wch: 15 }, // Status
+      { wch: 20 }, // Forma de Pagamento
       { wch: 50 }, // Observações
       { wch: 12 }, // Criado em
       { wch: 12 }, // Atualizado em
@@ -112,6 +114,7 @@ export const useClients = () => {
         instagram: row['Instagram'] || '',
         whatsapp: row['WhatsApp'] || '',
         status: getStatusFromLabel(row['Status']) || 'not_contacted',
+        paymentMethod: row['Forma de Pagamento'] || '',
         notes: row['Observações'] || '',
         createdAt: parseExcelDate(row['Criado em']) || new Date(),
         updatedAt: parseExcelDate(row['Atualizado em']) || new Date(),

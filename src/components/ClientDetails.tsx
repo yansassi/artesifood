@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ExternalLink, Edit3, Save, Calendar, MessageCircle, CheckCircle, X, Clock, DollarSign, XCircle, User, Phone, Instagram } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Edit3, Save, Calendar, MessageCircle, CheckCircle, X, Clock, DollarSign, XCircle, User, Phone, Instagram, CreditCard } from 'lucide-react';
 import { Client } from '../types/client';
 import { getStatusConfig } from '../utils/statusConfig';
 import { ClientFormModal } from './ClientFormModal';
@@ -18,6 +18,8 @@ export const ClientDetails: React.FC<ClientDetailsProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState(client.notes);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [paymentMethodInput, setPaymentMethodInput] = useState(client.paymentMethod || '');
+  const [isEditingPayment, setIsEditingPayment] = useState(false);
   
   const statusConfig = getStatusConfig(client.status);
 
@@ -45,6 +47,15 @@ export const ClientDetails: React.FC<ClientDetailsProps> = ({
       updatedAt: new Date(),
     });
     setIsEditing(false);
+  };
+
+  const handleSavePaymentMethod = () => {
+    onUpdateClient({
+      ...client,
+      paymentMethod: paymentMethodInput,
+      updatedAt: new Date(),
+    });
+    setIsEditingPayment(false);
   };
 
   const handleOpenLink = (url: string) => {
@@ -214,6 +225,66 @@ export const ClientDetails: React.FC<ClientDetailsProps> = ({
                   })}
                 </div>
               </div>
+
+              {client.status === 'closed' && (
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
+                      <CreditCard className="w-5 h-5" />
+                      <span>Forma de Pagamento</span>
+                    </h3>
+                    {!isEditingPayment && (
+                      <button
+                        onClick={() => setIsEditingPayment(true)}
+                        className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 transition-colors"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                        <span>Editar</span>
+                      </button>
+                    )}
+                  </div>
+                  
+                  {isEditingPayment ? (
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={paymentMethodInput}
+                        onChange={(e) => setPaymentMethodInput(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Ex: PIX, Cartão de Crédito, Dinheiro, Transferência..."
+                      />
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={handleSavePaymentMethod}
+                          className="flex items-center space-x-2 px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        >
+                          <Save className="w-4 h-4" />
+                          <span>Salvar</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setIsEditingPayment(false);
+                            setPaymentMethodInput(client.paymentMethod || '');
+                          }}
+                          className="flex items-center space-x-2 px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                          <span>Cancelar</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <div className="flex items-center space-x-2">
+                        <CreditCard className="w-5 h-5 text-green-600" />
+                        <span className="font-medium text-green-900">
+                          {client.paymentMethod || 'Forma de pagamento não informada'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div>
                 <div className="flex items-center justify-between mb-3">
