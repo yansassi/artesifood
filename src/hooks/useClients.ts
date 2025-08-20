@@ -169,50 +169,6 @@ export const useClients = () => {
     return isNaN(parsed.getTime()) ? null : parsed;
   };
 
-  const importClients = async (file: File) => {
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `clientes-ifood-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  const importClients = async (file: File) => {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-      
-      // Get first worksheet
-      const worksheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[worksheetName];
-      
-      // Convert to JSON
-      const jsonData = XLSX.utils.sheet_to_json(worksheet);
-      
-      // Map Excel data back to Client format
-      const importedClients: Client[] = jsonData.map((row: any, index: number) => ({
-        id: `imported-${Date.now()}-${index}`,
-        name: row['Nome'] || '',
-        ifoodLink: row['Link iFood'] || '',
-        googleLink: row['Link Google'] || '',
-        instagram: row['Instagram'] || '',
-        whatsapp: row['WhatsApp'] || '',
-        status: getStatusFromLabel(row['Status']) || 'not_contacted',
-        notes: row['Observações'] || '',
-        createdAt: parseExcelDate(row['Criado em']) || new Date(),
-        updatedAt: parseExcelDate(row['Atualizado em']) || new Date(),
-      }));
-      
-      setClients(importedClients);
-      return { success: true, count: importedClients.length };
-    } catch (error) {
-      console.error('Error importing clients:', error);
-      return { success: false, error: 'Arquivo Excel inválido ou corrompido' };
-    }
-  };
 
   return {
     clients,
