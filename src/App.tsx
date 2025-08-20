@@ -11,10 +11,12 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
   const [importMessage, setImportMessage] = useState<string | null>(null);
 
   const filteredClients = clients.filter(client =>
-    client.name.toLowerCase().includes(searchTerm.toLowerCase())
+    client.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (filterStatus === 'all' || client.status === filterStatus)
   );
 
   const stats = {
@@ -176,8 +178,8 @@ function App() {
         </div>
 
         {/* Search */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
+        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
@@ -186,6 +188,22 @@ function App() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+          </div>
+          
+          <div className="min-w-48">
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+            >
+              <option value="all">Todos os Status</option>
+              <option value="not_contacted">Não Contatado</option>
+              <option value="contacted">Contatado</option>
+              <option value="responded">Respondeu</option>
+              <option value="proposal_sent">Proposta Enviada</option>
+              <option value="closed">Fechado</option>
+              <option value="rejected">Recusado</option>
+            </select>
           </div>
         </div>
 
