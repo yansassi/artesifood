@@ -52,11 +52,11 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim()) return;
+    if (!formData.name.trim() || !formData.value.trim()) return;
 
     const clientData = {
       ...formData,
-      value: formData.value ? parseFloat(formData.value) : undefined,
+      value: parseFloat(formData.value),
       status: clientToEdit?.status || ('not_contacted' as const),
       ...(clientToEdit && { id: clientToEdit.id }),
     };
@@ -183,7 +183,7 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               <DollarSign className="w-4 h-4 inline mr-1" />
-              Valor do Projeto (R$)
+              Valor do Projeto (R$) *
             </label>
             <input
               type="number"
@@ -193,8 +193,12 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
               step="0.01"
               min="0"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="0,00"
+              placeholder="Ex: 1500.00"
+              required
             />
+            <p className="text-xs text-gray-500 mt-1">
+              Informe o valor total do projeto em reais
+            </p>
           </div>
 
           <div>
