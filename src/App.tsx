@@ -139,7 +139,7 @@ function App() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center space-x-3">
               <div className="bg-blue-100 p-3 rounded-full">
@@ -172,6 +172,20 @@ function App() {
               <div>
                 <p className="text-2xl font-bold text-gray-900">{stats.closed}</p>
                 <p className="text-gray-600">Projetos Fechados</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center space-x-3">
+              <div className="bg-emerald-100 p-3 rounded-full">
+                <DollarSign className="w-6 h-6 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">
+                  R$ {stats.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
+                <p className="text-gray-600">Faturamento Total</p>
               </div>
             </div>
           </div>

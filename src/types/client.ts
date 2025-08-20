@@ -8,6 +8,7 @@ export interface Client {
   status: 'not_contacted' | 'contacted' | 'responded' | 'proposal_sent' | 'closed' | 'rejected';
   notes: string;
   paymentMethod?: string;
+  value?: number;
   createdAt: Date;
   updatedAt: Date;
 }

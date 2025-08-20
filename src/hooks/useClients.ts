@@ -114,6 +114,7 @@ export const useClients = () => {
         instagram: row['Instagram'] || '',
         whatsapp: row['WhatsApp'] || '',
         status: getStatusFromLabel(row['Status']) || 'not_contacted',
+        value: row['Valor do Projeto'] ? parseFloat(row['Valor do Projeto']) : undefined,
         paymentMethod: row['Forma de Pagamento'] || '',
         notes: row['Observações'] || '',
         createdAt: parseExcelDate(row['Criado em']) || new Date(),

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Link, User, MessageCircle, Instagram } from 'lucide-react';
+import { X, Save, Link, User, MessageCircle, Instagram, DollarSign } from 'lucide-react';
 import { Client } from '../types/client';
 
 interface ClientFormModalProps {
@@ -22,6 +22,7 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
     instagram: '',
     whatsapp: '',
     notes: '',
+    value: '',
   });
 
   // Initialize form data when modal opens or clientToEdit changes
@@ -34,6 +35,7 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
         instagram: clientToEdit.instagram,
         whatsapp: clientToEdit.whatsapp,
         notes: clientToEdit.notes,
+        value: clientToEdit.value?.toString() || '',
       });
     } else {
       setFormData({
@@ -43,6 +45,7 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
         instagram: '',
         whatsapp: '',
         notes: '',
+        value: '',
       });
     }
   }, [clientToEdit, isOpen]);
@@ -53,6 +56,7 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
 
     const clientData = {
       ...formData,
+      value: formData.value ? parseFloat(formData.value) : undefined,
       status: clientToEdit?.status || ('not_contacted' as const),
       ...(clientToEdit && { id: clientToEdit.id }),
     };
@@ -68,6 +72,7 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
         instagram: '',
         whatsapp: '',
         notes: '',
+        value: '',
       });
     }
   };
@@ -172,6 +177,23 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="5511987654321 (com DDD e código do país)"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              <DollarSign className="w-4 h-4 inline mr-1" />
+              Valor do Projeto (R$)
+            </label>
+            <input
+              type="number"
+              name="value"
+              value={formData.value}
+              onChange={handleChange}
+              step="0.01"
+              min="0"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="0,00"
             />
           </div>
 
