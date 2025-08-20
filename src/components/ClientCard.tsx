@@ -49,6 +49,11 @@ export const ClientCard: React.FC<ClientCardProps> = ({ client, onClick }) => {
               Google
             </span>
           )}
+          {client.instagram && (
+            <span className="inline-flex items-center px-2 py-1 rounded bg-purple-100 text-purple-800 text-xs">
+              Instagram
+            </span>
+          )}
           {client.whatsapp && (
             <span className="inline-flex items-center px-2 py-1 rounded bg-teal-100 text-teal-800 text-xs">
               WhatsApp

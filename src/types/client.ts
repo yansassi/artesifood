@@ -3,6 +3,7 @@ export interface Client {
   name: string;
   ifoodLink: string;
   googleLink: string;
+  instagram: string;
   whatsapp: string;
   status: 'not_contacted' | 'contacted' | 'responded' | 'proposal_sent' | 'closed' | 'rejected';
   notes: string;

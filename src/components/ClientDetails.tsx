@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ExternalLink, Edit3, Save, Calendar, MessageCircle, CheckCircle, X, Clock, DollarSign, XCircle, User, Phone } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Edit3, Save, Calendar, MessageCircle, CheckCircle, X, Clock, DollarSign, XCircle, User, Phone, Instagram } from 'lucide-react';
 import { Client } from '../types/client';
 import { getStatusConfig } from '../utils/statusConfig';
 import { ClientFormModal } from './ClientFormModal';
@@ -126,6 +126,23 @@ export const ClientDetails: React.FC<ClientDetailsProps> = ({
                         <div className="font-medium text-gray-900">Google</div>
                         <div className="text-sm text-gray-600 truncate max-w-xs">
                           {client.googleLink}
+                        </div>
+                      </div>
+                    </button>
+                  )}
+                  
+                  {client.instagram && (
+                    <button
+                      onClick={() => handleOpenLink(client.instagram)}
+                      className="flex items-center space-x-3 w-full p-3 border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors"
+                    >
+                      <div className="bg-purple-500 p-2 rounded-full">
+                        <Instagram className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <div className="font-medium text-gray-900">Instagram</div>
+                        <div className="text-sm text-gray-600 truncate max-w-xs">
+                          {client.instagram}
                         </div>
                       </div>
                     </button>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Users, Search, Camera, TrendingUp } from 'lucide-react';
+import { Plus, Users, Search, Camera, TrendingUp, Download, Upload } from 'lucide-react';
 import { Client } from './types/client';
 import { ClientCard } from './components/ClientCard';
 import { ClientFormModal } from './components/ClientFormModal';
@@ -8,10 +8,11 @@ import { useClients } from './hooks/useClients';
 import { getStatusConfig } from './utils/statusConfig';
 
 function App() {
-  const { clients, addClient, updateClient } = useClients();
+  const { clients, addClient, updateClient, exportClients, importClients } = useClients();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [importMessage, setImportMessage] = useState<string | null>(null);
 
   const filteredClients = clients.filter(client =>
     client.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,6 +41,23 @@ function App() {
       addClient(clientData);
     }
     setIsModalOpen(false);
+  };
+
+  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const result = await importClients(file);
+    if (result.success) {
+      setImportMessage(`${result.count} clientes importados com sucesso!`);
+      setTimeout(() => setImportMessage(null), 3000);
+    } else {
+      setImportMessage(`Erro: ${result.error}`);
+      setTimeout(() => setImportMessage(null), 3000);
+    }
+
+    // Reset file input
+    event.target.value = '';
   };
 
   if (selectedClient) {
@@ -74,14 +92,47 @@ function App() {
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
-            >
-              <Plus className="w-5 h-5" />
-              <span>Adicionar Cliente</span>
-            </button>
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={exportClients}
+                  className="flex items-center space-x-2 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors shadow-md"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Exportar</span>
+                </button>
+                
+                <label className="flex items-center space-x-2 bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition-colors shadow-md cursor-pointer">
+                  <Upload className="w-4 h-4" />
+                  <span>Importar</span>
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={handleImport}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+              
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+              >
+                <Plus className="w-5 h-5" />
+                <span>Adicionar Cliente</span>
+              </button>
+            </div>
           </div>
+          
+          {importMessage && (
+            <div className={`mt-4 p-3 rounded-lg ${
+              importMessage.includes('Erro') 
+                ? 'bg-red-100 text-red-700 border border-red-200' 
+                : 'bg-green-100 text-green-700 border border-green-200'
+            }`}>
+              {importMessage}
+            </div>
+          )}
         </div>
       </div>
 

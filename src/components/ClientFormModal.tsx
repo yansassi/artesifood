@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Link, User, MessageCircle } from 'lucide-react';
+import { X, Save, Link, User, MessageCircle, Instagram } from 'lucide-react';
 import { Client } from '../types/client';
 
 interface ClientFormModalProps {
@@ -19,6 +19,7 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
     name: '',
     ifoodLink: '',
     googleLink: '',
+    instagram: '',
     whatsapp: '',
     notes: '',
   });
@@ -30,6 +31,7 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
         name: clientToEdit.name,
         ifoodLink: clientToEdit.ifoodLink,
         googleLink: clientToEdit.googleLink,
+        instagram: clientToEdit.instagram,
         whatsapp: clientToEdit.whatsapp,
         notes: clientToEdit.notes,
       });
@@ -38,6 +40,7 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
         name: '',
         ifoodLink: '',
         googleLink: '',
+        instagram: '',
         whatsapp: '',
         notes: '',
       });
@@ -62,6 +65,7 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
         name: '',
         ifoodLink: '',
         googleLink: '',
+        instagram: '',
         whatsapp: '',
         notes: '',
       });
@@ -138,6 +142,21 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="https://www.google.com/maps/place/..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              <Instagram className="w-4 h-4 inline mr-1" />
+              Instagram
+            </label>
+            <input
+              type="url"
+              name="instagram"
+              value={formData.instagram}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="https://www.instagram.com/usuario"
             />
           </div>
 
