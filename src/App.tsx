@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Users, Search, CheckCircle, TrendingUp, Download, Upload, ExternalLink, Camera } from 'lucide-react';
+import { Plus, Users, Search, CheckCircle, TrendingUp, Download, Upload, ExternalLink, Camera, DollarSign } from 'lucide-react';
 import { Client } from './types/client';
 import { ClientFormModal } from './components/ClientFormModal';
 import { ClientDetails } from './components/ClientDetails';
