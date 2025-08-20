@@ -53,7 +53,7 @@ function App() {
 
     const result = await importClients(file);
     if (result.success) {
-      setImportMessage(`${result.count} clientes importados com sucesso!`);
+      setImportMessage(result.message || `${result.count} clientes importados com sucesso!`);
       setTimeout(() => setImportMessage(null), 3000);
     } else {
       setImportMessage(`Erro: ${result.error}`);

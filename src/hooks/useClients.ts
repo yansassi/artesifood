@@ -107,7 +107,7 @@ export const useClients = () => {
       
       // Map Excel data back to Client format
       const importedClients: Client[] = jsonData.map((row: any, index: number) => ({
-        id: `imported-${Date.now()}-${index}`,
+        id: `temp-${index}`, // Temporary ID for processing
         name: row['Nome'] || '',
         ifoodLink: row['Link iFood'] || '',
         googleLink: row['Link Google'] || '',
@@ -121,8 +121,56 @@ export const useClients = () => {
         updatedAt: parseExcelDate(row['Atualizado em']) || new Date(),
       }));
       
-      setClients(importedClients);
-      return { success: true, count: importedClients.length };
+      // Merge imported clients with existing clients
+      setClients(prevClients => {
+        const mergedClients = [...prevClients];
+        let newClientsCount = 0;
+        let updatedClientsCount = 0;
+        
+        importedClients.forEach(importedClient => {
+          // Find existing client by name (case-insensitive)
+          const existingClientIndex = mergedClients.findIndex(
+            client => client.name.toLowerCase() === importedClient.name.toLowerCase()
+          );
+          
+          if (existingClientIndex !== -1) {
+            // Update existing client with imported data
+            mergedClients[existingClientIndex] = {
+              ...importedClient,
+              id: mergedClients[existingClientIndex].id, // Keep original ID
+              createdAt: mergedClients[existingClientIndex].createdAt, // Keep original creation date
+              updatedAt: new Date(), // Update the modification date
+            };
+            updatedClientsCount++;
+          } else {
+            // Add new client with unique ID
+            const newClient = {
+              ...importedClient,
+              id: `imported-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            };
+            mergedClients.push(newClient);
+            newClientsCount++;
+          }
+        });
+        
+        return mergedClients;
+      });
+      
+      return { 
+        success: true, 
+        count: importedClients.length,
+        message: `Importação concluída: ${importedClients.filter((_, index) => {
+          const existingClient = clients.find(
+            client => client.name.toLowerCase() === importedClients[index].name.toLowerCase()
+          );
+          return !existingClient;
+        }).length} novos clientes adicionados, ${importedClients.filter((_, index) => {
+          const existingClient = clients.find(
+            client => client.name.toLowerCase() === importedClients[index].name.toLowerCase()
+          );
+          return existingClient;
+        }).length} clientes atualizados.`
+      };
     } catch (error) {
       console.error('Error importing clients:', error);
       return { success: false, error: 'Arquivo Excel inválido ou corrompido' };
