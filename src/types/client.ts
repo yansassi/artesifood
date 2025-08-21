@@ -9,6 +9,7 @@ export interface Client {
   notes: string;
   paymentMethod?: string;
   value?: number;
+  interestLevel?: number; // 1-5 scale
   createdAt: Date;
   updatedAt: Date;
 }

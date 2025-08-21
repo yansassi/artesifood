@@ -14,6 +14,7 @@ export const useClients = () => {
       try {
         const parsedClients = JSON.parse(stored).map((client: any) => ({
           ...client,
+          whatsapp: String(client.whatsapp || ''),
           createdAt: new Date(client.createdAt),
           updatedAt: new Date(client.updatedAt),
         }));
@@ -60,7 +61,9 @@ export const useClients = () => {
       'Instagram': client.instagram,
       'WhatsApp': client.whatsapp,
       'Status': getStatusLabel(client.status),
+      'Nível de Interesse': client.interestLevel || '',
       'Forma de Pagamento': client.paymentMethod || '',
+      'Valor do Projeto': client.value || '',
       'Observações': client.notes,
       'Criado em': new Date(client.createdAt).toLocaleDateString('pt-BR'),
       'Atualizado em': new Date(client.updatedAt).toLocaleDateString('pt-BR'),
@@ -78,7 +81,9 @@ export const useClients = () => {
       { wch: 30 }, // Instagram
       { wch: 15 }, // WhatsApp
       { wch: 15 }, // Status
+      { wch: 18 }, // Nível de Interesse
       { wch: 20 }, // Forma de Pagamento
+      { wch: 15 }, // Valor do Projeto
       { wch: 50 }, // Observações
       { wch: 12 }, // Criado em
       { wch: 12 }, // Atualizado em
@@ -112,8 +117,9 @@ export const useClients = () => {
         ifoodLink: row['Link iFood'] || '',
         googleLink: row['Link Google'] || '',
         instagram: row['Instagram'] || '',
-        whatsapp: row['WhatsApp'] || '',
+        whatsapp: String(row['WhatsApp'] || ''),
         status: getStatusFromLabel(row['Status']) || 'not_contacted',
+        interestLevel: row['Nível de Interesse'] ? parseInt(row['Nível de Interesse']) : undefined,
         value: row['Valor do Projeto'] ? parseFloat(row['Valor do Projeto']) : undefined,
         paymentMethod: row['Forma de Pagamento'] || '',
         notes: row['Observações'] || '',

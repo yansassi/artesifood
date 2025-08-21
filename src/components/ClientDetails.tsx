@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ExternalLink, Edit3, Save, Calendar, MessageCircle, CheckCircle, X, Clock, DollarSign, XCircle, User, Phone, Instagram, CreditCard } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Edit3, Save, Calendar, MessageCircle, CheckCircle, X, Clock, DollarSign, XCircle, User, Phone, Instagram, CreditCard, Trash2, Star } from 'lucide-react';
 import { Client } from '../types/client';
 import { getStatusConfig } from '../utils/statusConfig';
 import { ClientFormModal } from './ClientFormModal';
@@ -8,18 +8,22 @@ interface ClientDetailsProps {
   client: Client;
   onBack: () => void;
   onUpdateClient: (updatedClient: Client) => void;
+  onDeleteClient: (clientId: string) => void;
 }
 
 export const ClientDetails: React.FC<ClientDetailsProps> = ({
   client,
   onBack,
   onUpdateClient,
+  onDeleteClient,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState(client.notes);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [paymentMethodInput, setPaymentMethodInput] = useState(client.paymentMethod || '');
   const [isEditingPayment, setIsEditingPayment] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [interestLevel, setInterestLevel] = useState(client.interestLevel || 0);
   
   const statusConfig = getStatusConfig(client.status);
 
@@ -58,6 +62,20 @@ export const ClientDetails: React.FC<ClientDetailsProps> = ({
     setIsEditingPayment(false);
   };
 
+  const handleDeleteClient = () => {
+    onDeleteClient(client.id);
+    onBack();
+  };
+
+  const handleInterestLevelChange = (level: number) => {
+    setInterestLevel(level);
+    onUpdateClient({
+      ...client,
+      interestLevel: level,
+      updatedAt: new Date(),
+    });
+  };
+
   const handleOpenLink = (url: string) => {
     window.open(url, '_blank');
   };
@@ -65,9 +83,12 @@ export const ClientDetails: React.FC<ClientDetailsProps> = ({
   const handleOpenWhatsApp = (whatsapp: string) => {
     // Remove any non-digit characters and format for WhatsApp
     const cleanNumber = whatsapp.replace(/\D/g, '');
-    const whatsappUrl = `https://wa.me/${cleanNumber}`;
+    // Add Brazil country code (+55) if not already present
+    const formattedNumber = cleanNumber.startsWith('55') ? cleanNumber : `55${cleanNumber}`;
+    const whatsappUrl = `https://wa.me/${formattedNumber}`;
     window.open(whatsappUrl, '_blank');
   };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow-sm">
@@ -87,13 +108,22 @@ export const ClientDetails: React.FC<ClientDetailsProps> = ({
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
               <h1 className="text-3xl font-bold text-gray-900">{client.name}</h1>
-              <button
-                onClick={() => setIsEditModalOpen(true)}
-                className="flex items-center space-x-2 px-3 py-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
-              >
-                <Edit3 className="w-4 h-4" />
-                <span>Editar</span>
-              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="flex items-center space-x-2 px-3 py-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
+                >
+                  <Edit3 className="w-4 h-4" />
+                  <span>Editar</span>
+                </button>
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="flex items-center space-x-2 px-3 py-1 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Excluir</span>
+                </button>
+              </div>
             </div>
             <div
               className={`px-4 py-2 rounded-full text-sm font-medium ${statusConfig.bgColor}`}
@@ -310,6 +340,74 @@ export const ClientDetails: React.FC<ClientDetailsProps> = ({
               )}
 
               <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+                  <Star className="w-5 h-5" />
+                  <span>Nível de Interesse</span>
+                </h3>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <p className="text-sm text-gray-600 mb-3">
+                    Classifique o potencial deste cliente de 1 a 5 estrelas:
+                  </p>
+                  <div className="flex items-center space-x-2">
+                    {[1, 2, 3, 4, 5].map((level) => (
+                      <button
+                        key={level}
+                        onClick={() => handleInterestLevelChange(level)}
+                        className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                          level <= interestLevel
+                            ? 'text-yellow-500 hover:text-yellow-600'
+                            : 'text-gray-300 hover:text-gray-400'
+                        }`}
+                        title={`${level} estrela${level > 1 ? 's' : ''}`}
+                      >
+                        <Star
+                          className="w-8 h-8"
+                          fill={level <= interestLevel ? 'currentColor' : 'none'}
+                        />
+                      </button>
+                    ))}
+                    {interestLevel > 0 && (
+                      <div className="ml-4 flex items-center space-x-2">
+                        <span className="text-sm font-medium text-gray-700">
+                          {interestLevel}/5
+                        </span>
+                        <button
+                          onClick={() => handleInterestLevelChange(0)}
+                          className="text-xs text-gray-500 hover:text-gray-700 underline"
+                        >
+                          Limpar
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  {interestLevel === 0 && (
+                    <p className="text-xs text-gray-500 mt-2">
+                      Nenhuma classificação definida
+                    </p>
+                  )}
+                  {interestLevel > 0 && (
+                    <div className="mt-3">
+                      <div className="flex items-center space-x-2">
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-gradient-to-r from-yellow-400 to-yellow-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${(interestLevel / 5) * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-gray-600">
+                          {interestLevel === 1 && 'Baixo interesse'}
+                          {interestLevel === 2 && 'Interesse limitado'}
+                          {interestLevel === 3 && 'Interesse moderado'}
+                          {interestLevel === 4 && 'Alto interesse'}
+                          {interestLevel === 5 && 'Interesse máximo'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-lg font-semibold text-gray-900">Observações</h3>
                   {!isEditing && (
@@ -377,6 +475,62 @@ export const ClientDetails: React.FC<ClientDetailsProps> = ({
         }}
         clientToEdit={client}
       />
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between p-6 border-b">
+              <h2 className="text-xl font-semibold text-gray-900 flex items-center space-x-2">
+                <Trash2 className="w-5 h-5 text-red-600" />
+                <span>Confirmar Exclusão</span>
+              </h2>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <div className="mb-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                  <div className="flex items-center space-x-2">
+                    <XCircle className="w-5 h-5 text-red-600" />
+                    <span className="font-medium text-red-900">Atenção!</span>
+                  </div>
+                  <p className="text-red-700 mt-2">
+                    Esta ação não pode ser desfeita.
+                  </p>
+                </div>
+                <p className="text-gray-700">
+                  Tem certeza que deseja excluir o cliente <strong>"{client.name}"</strong>?
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  Todas as informações, observações e histórico deste cliente serão permanentemente removidos.
+                </p>
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleDeleteClient}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Excluir Cliente</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

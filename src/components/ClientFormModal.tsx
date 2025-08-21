@@ -176,8 +176,13 @@ export const ClientFormModal: React.FC<ClientFormModalProps> = ({
               value={formData.whatsapp}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="5511987654321 (com DDD e código do país)"
+              placeholder="5511987654321"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              <strong>Formato:</strong> DDD + número (ex: 11987654321)
+              <br />
+              <span className="text-green-600">✅ O código do Brasil (+55) será adicionado automaticamente</span>
+            </p>
           </div>
 
           <div>
