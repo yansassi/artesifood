@@ -7,7 +7,7 @@ import { useClients } from './hooks/useClients';
 import { getStatusConfig } from './utils/statusConfig';
 
 function App() {
-  const { clients, addClient, updateClient, exportClients, importClients } = useClients();
+  const { clients, addClient, updateClient, deleteClient, exportClients, importClients } = useClients();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
